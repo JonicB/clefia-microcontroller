@@ -14,31 +14,31 @@ uint32_t count_tic = 0;
 
 #define measurement 0
 
-#define adress 0x080E0000             // адрес хранени ключа
-volatile uint8_t read[32], send[34];  //массивы для приема и отправки информации
+#define adress 0x080E0000             // Р°РґСЂРµСЃ С…СЂР°РЅРµРЅРё РєР»СЋС‡Р°
+volatile uint8_t read[32], send[34];  //РјР°СЃСЃРёРІС‹ РґР»СЏ РїСЂРёРµРјР° Рё РѕС‚РїСЂР°РІРєРё РёРЅС„РѕСЂРјР°С†РёРё
 volatile GPIO_InitTypeDef gpio;
 volatile USART_InitTypeDef usart;
-volatile uint8_t readStatus = 0;      // статус чтения, чтобы понимать, какая информация сейчас принимается
-volatile uint8_t data = 0;            // переменная, в которую записываются принятые байты
-volatile uint8_t readCount = 0;       // счетсик считанных байт
-volatile uint8_t sendByte = 0;        // индикатор отправления символа
-volatile uint8_t sendCount = 0;       // счетчик отправленных байт
-volatile uint8_t sendKey = 0;         // индикатор отправления ключа
-volatile char message[11] = { 0x0A,0x0D,'N','e','w',' ','k','e','y',':',' ' };  //сообщение о новом ключе
-volatile char newLine[2] = { 0x0A,0x0D };    //переход на новую строку
-volatile char wrong[9] = {0x0A,0x0D,'E','r','r','o','r',0x0A,0x0D};   //сообщение об ошибке
-volatile uint8_t sendMessage = 0;     // индикатор отправления сообщения
-volatile uint8_t sendNewLine = 0;     // индикатор переноса на новую строку
-volatile uint32_t k[4], b[4];         // массивы с данными ключа и блока
-volatile uint8_t isBlock = 0;         // индикатор шифрования
-volatile uint8_t later = 1;           // индикатор смены ключа
-volatile uint8_t sendBlock = 0;       // индикатор отправления блока
-volatile uint8_t error = 0;           // индикатор ошибки в данных
-volatile uint8_t sendError = 0;       // индикатор отправления сообщения об ошибке
+volatile uint8_t readStatus = 0;      // СЃС‚Р°С‚СѓСЃ С‡С‚РµРЅРёСЏ, С‡С‚РѕР±С‹ РїРѕРЅРёРјР°С‚СЊ, РєР°РєР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ СЃРµР№С‡Р°СЃ РїСЂРёРЅРёРјР°РµС‚СЃСЏ
+volatile uint8_t data = 0;            // РїРµСЂРµРјРµРЅРЅР°СЏ, РІ РєРѕС‚РѕСЂСѓСЋ Р·Р°РїРёСЃС‹РІР°СЋС‚СЃСЏ РїСЂРёРЅСЏС‚С‹Рµ Р±Р°Р№С‚С‹
+volatile uint8_t readCount = 0;       // СЃС‡РµС‚С‡РёРє СЃРїРёСЃР°РЅРЅС‹С… Р±Р°Р№С‚
+volatile uint8_t sendByte = 0;        // РёРЅРґРёРєР°С‚РѕСЂ РѕС‚РїСЂР°РІР»РµРЅРёСЏ СЃРёРјРІРѕР»Р°
+volatile uint8_t sendCount = 0;       // СЃС‡РµС‚С‡РёРє РѕС‚РїСЂР°РІР»РµРЅРЅС‹С… Р±Р°Р№С‚
+volatile uint8_t sendKey = 0;         // РёРЅРґРёРєР°С‚РѕСЂ РѕС‚РїСЂР°РІР»РµРЅРёСЏ РєР»СЋС‡Р°
+volatile char message[11] = { 0x0A,0x0D,'N','e','w',' ','k','e','y',':',' ' };  //СЃРѕРѕР±С‰РµРЅРёРµ Рѕ РЅРѕРІРѕРј РєР»СЋС‡Рµ
+volatile char newLine[2] = { 0x0A,0x0D };    //РїРµСЂРµС…РѕРґ РЅР° РЅРѕРІСѓСЋ СЃС‚СЂРѕРєСѓ
+volatile char wrong[9] = {0x0A,0x0D,'E','r','r','o','r',0x0A,0x0D};   //СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ
+volatile uint8_t sendMessage = 0;     // РёРЅРґРёРєР°С‚РѕСЂ РѕС‚РїСЂР°РІР»РµРЅРёСЏ СЃРѕРѕР±С‰РµРЅРёСЏ
+volatile uint8_t sendNewLine = 0;     // РёРЅРґРёРєР°С‚РѕСЂ РїРµСЂРµРЅРѕСЃР° РЅР° РЅРѕРІСѓСЋ СЃС‚СЂРѕРєСѓ
+volatile uint32_t k[4], b[4];         // РјР°СЃСЃРёРІ СЃ РґР°РЅРЅС‹РјРё РєР»СЋС‡Р° Рё Р±Р»РѕРєР°
+volatile uint8_t isBlock = 0;         // РёРЅРґРёРєР°С‚РѕСЂ С€РёС„СЂРѕРІР°РЅРёСЏ
+volatile uint8_t later = 1;           // РёРЅРґРёРєР°С‚РѕСЂ СЃРјРµРЅС‹ РєР»СЋС‡Р°
+volatile uint8_t sendBlock = 0;       // РёРЅРґРёРєР°С‚РѕСЂ РѕС‚РїСЂР°РІР»РµРЅРёСЏ Р±Р»РѕРєР°
+volatile uint8_t error = 0;           // РёРЅРґРёРєР°С‚РѕСЂ РѕС€РёР±РєРё РІ РґР°РЅРЅС‹С…
+volatile uint8_t sendError = 0;       // РёРЅРґРёРєР°С‚РѕСЂ РѕС‚РїСЂР°РІР»РµРЅРёСЏ СЃРѕРѕР±С‰РµРЅРёСЏ РѕР± РѕС€РёР±РєРµ
 volatile uint8_t sendtic = 0;
 
 const uint32_t
-/* Константы для генерации ключей */
+/* РљРѕРЅСЃС‚Р°РЅС‚С‹ РґР»СЏ РіРµРЅРµСЂР°С†РёРё РєР»СЋС‡РµР№ */
 con[] = { 0xf56b7aeb, 0x994a8a42, 0x96a4bd75, 0xfa854521,
           0x735b768a, 0x1f7abac4, 0xd5bc3b45, 0xb99d5d62,
           0x52d73592, 0x3ef636e5, 0xc57a1ac9, 0xa95b9b72,
@@ -56,7 +56,7 @@ con[] = { 0xf56b7aeb, 0x994a8a42, 0x96a4bd75, 0xfa854521,
           0x50b63150, 0x3c9757e7, 0x1052b098, 0x7c73b3a7 };
 
 const uint8_t
-/* Блок замены S1*/
+/* Р‘Р»РѕРє Р·Р°РјРµРЅС‹ S1*/
 S1[] = { 0x6c, 0xda, 0xc3, 0xe9, 0x4e, 0x9d, 0x0a, 0x3d, 0xb8, 0x36, 0xb4, 0x38, 0x13, 0x34, 0x0c, 0xd9,
          0xbf, 0x74, 0x94, 0x8f, 0xb7, 0x9c, 0xe5, 0xdc, 0x9e, 0x07, 0x49, 0x4f, 0x98, 0x2c, 0xb0, 0x93,
          0x12, 0xeb, 0xcd, 0xb3, 0x92, 0xe7, 0x41, 0x60, 0xe3, 0x21, 0x27, 0x3b, 0xe6, 0x19, 0xd2, 0x0e,
@@ -75,21 +75,21 @@ S1[] = { 0x6c, 0xda, 0xc3, 0xe9, 0x4e, 0x9d, 0x0a, 0x3d, 0xb8, 0x36, 0xb4, 0x38,
          0xf7, 0xe4, 0x79, 0x96, 0xa2, 0xfc, 0x6d, 0xb2, 0x6b, 0x03, 0xe1, 0x2e, 0x7d, 0x14, 0x95, 0x1d };
 
 const uint8_t
-/* Таблица замен для преобразований блока S0 */
+/* РўР°Р±Р»РёС†Р° Р·Р°РјРµРЅ РґР»СЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёР№ Р±Р»РѕРєР° S0 */
 SS[4][16] = { {0xe, 0x6, 0xc, 0xa, 0x8, 0x7, 0x2, 0xf, 0xb, 0x1, 0x4, 0x0, 0x5, 0x9, 0xd, 0x3},
               {0x6, 0x4, 0x0, 0xd, 0x2, 0xb, 0xa, 0x3, 0x9, 0xc, 0xe, 0xf, 0x8, 0x7, 0x5, 0x1},
               {0xb, 0x8, 0x5, 0xe, 0xa, 0x6, 0x4, 0xc, 0xf, 0x7, 0x2, 0x3, 0x1, 0x0, 0xd, 0x9},
               {0xa, 0x2, 0x6, 0xd, 0x3, 0x4, 0x5, 0xe, 0x0, 0x7, 0x8, 0x9, 0xb, 0xf, 0xc, 0x1} };
 
-volatile uint32_t RoundKeys[36] = {0};   // массив раундовых ключей шифрования
+volatile uint32_t RoundKeys[36] = {0};   // РјР°СЃСЃРёРІ СЂР°СѓРЅРґРѕРІС‹С… РєР»СЋС‡РµР№ С€РёС„СЂРѕРІР°РЅРёСЏ
 
-/*Инициализация портов для передачи данных с компьютером */
+/* РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРѕСЂС‚РѕРІ РґР»СЏ РїРµСЂРµРґР°С‡Рё РґР°РЅРЅС‹С… СЃ РєРѕРјРїСЊСЋС‚РµСЂРѕРј */
 void InitAll() {
     __enable_irq();
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
-    /* Настройка портов приемы и вывода*/
+    /* РќР°СЃС‚СЂРѕР№РєР° РїРѕСЂС‚РѕРІ РїСЂРёРµРјР° Рё РІС‹РІРѕРґР° */
 
     GPIO_StructInit(&gpio);
     gpio.GPIO_Mode = GPIO_Mode_AF;
@@ -118,7 +118,7 @@ void InitAll() {
     USART_Cmd(USART2, ENABLE);
 }
 
-/* Запись ключа во Flash память */
+/* Р—Р°РїРёСЃСЊ РєР»СЋС‡Р° РІРѕ Flash РїР°РјСЏС‚СЊ */
 void WriteKey() {
     FLASH_Unlock();
     FLASH_EraseSector(FLASH_Sector_11, VoltageRange_3);
@@ -127,19 +127,19 @@ void WriteKey() {
     FLASH_Lock();
 }
 
-/* Получение ячейки из Flash памяти */
+/* РџРѕР»СѓС‡РµРЅРёРµ СЏС‡РµР№РєРё РёР· Flash РїР°РјСЏС‚Рё */
 uint32_t flash_read(uint32_t ad) {
     return (*(__IO uint32_t*) ad);
 }
 
-/* Чтение ключа из Flash памяти */
+/* Р§С‚РµРЅРёРµ РєР»СЋС‡Р° РёР· Flash РїР°РјСЏС‚Рё */
 void ReadKey() {
     for (uint8_t i = 0; i < 4; i++) {
         k[i] = flash_read(adress + i*4);
     }
 }
 
-/* Преобразование массива из 32-х байт в массив из четырех элементов по 4 байта */
+/* РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РјР°СЃСЃРёРІР° РёР· 32-С… СЃРёРјРІРѕР»РѕРІ РІ РјР°СЃСЃРёРІ РёР· С‡РµС‚С‹СЂРµС… СЌР»РµРјРµРЅС‚РѕРІ РїРѕ 4 Р±Р°Р№С‚Р° */
 void GetBlock(uint8_t from[], uint32_t to[]) {
     for (uint8_t i=0;i<4;i++){
     	to[i] = 0;
@@ -164,7 +164,7 @@ void GetBlock(uint8_t from[], uint32_t to[]) {
     }
 }
 
-/* Преобразования массива в байты для отправления */
+/* РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РјР°СЃСЃРёРІР° РІ Р±Р°Р№С‚С‹ РґР»СЏ РѕС‚РїСЂР°РІР»РµРЅРёСЏ */
 void LittleBlock(uint32_t x[]) {
     send[0] = 0x0A;
     send[1] = 0x0D;
@@ -191,40 +191,40 @@ void LittleBlock(uint32_t x[]) {
     }
 }
 
-/* Работа с получением данных и их передачей */
+/* Р Р°Р±РѕС‚Р° СЃ РїРѕР»СѓС‡РµРЅРёРµРј РґР°РЅРЅС‹С… Рё РёС… РїРµСЂРµРґР°С‡РµР№ */
 void USART2_IRQHandler() {
 
     if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) {
         USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-        data = USART_ReceiveData(USART2);        // считывание символа
+        data = USART_ReceiveData(USART2);        // СЃС‡РёС‚С‹РІР°РЅРёРµ СЃРёРјРІРѕР»Р°
         sendByte = 1;
-        if (readStatus == 0) {        // изменение статуса чтения, если он был нулевым
+        if (readStatus == 0) {        // РёР·РјРµРЅРµРЅРёРµ СЃС‚Р°С‚СѓСЃР° С‡С‚РµРЅРёСЏ, РµСЃР»Рё РѕРЅ Р±С‹Р» РЅСѓР»РµРІС‹Рј
             if ((data == 0x31) || (data == 0x32) || (data == 0x33)||(data == 0x34)) {
                 readStatus = data;
                 sendNewLine = 1;
             }
         }
-        else if ((readStatus == 0x31) || (readStatus == 0x32)) {   // readStatus = 0x31 - шифрование; readStatus = 0x32 - расшифрование
-            read[readCount] = data;                                // образование блока из 32 шестнадцатеричных символов
+        else if ((readStatus == 0x31) || (readStatus == 0x32)) {   // readStatus = 0x31 - С€РёС„СЂРѕРІР°РЅРёРµ; readStatus = 0x32 - СЂР°СЃС€РёС„СЂРѕРІР°РЅРёРµ
+            read[readCount] = data;                                // РѕР±СЂР°Р·РѕРІР°РЅРёРµ Р±Р»РѕРєР° РёР· 32 С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅС‹С… СЃРёРјРІРѕР»РѕРІ
             readCount++;
             if (readCount == 32) {
                 readCount = 0;
                 isRight();
-                if (error) sendError = 1;                         // проверка введенных символов
+                if (error) sendError = 1;                         // РїСЂРѕРІРµСЂРєР° РІРІРµРґРµРЅРЅС‹С… СЃРёРјРІРѕР»РѕРІ
                 else isBlock = 1;
              }
         }
-        else if (readStatus == 0x33) {   // readStatus = 0x33 - запись нового ключа
-            read[readCount] = data;// формирование блока из 32 шестнадцатеричных символов
+        else if (readStatus == 0x33) {   // readStatus = 0x33 - Р·Р°РїРёСЃСЊ РЅРѕРІРѕРіРѕ РєР»СЋС‡Р°
+            read[readCount] = data;// С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ Р±Р»РѕРєР° РёР· 32 С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅС‹С… СЃРёРјРІРѕР»РѕРІ
             readCount++;
             if (readCount == 32) {
             	readStatus = 0;
                 readCount = 0;
                 isRight();
-                if (error) sendError = 1;   // проверка введенных символов
+                if (error) sendError = 1;   // РїСЂРѕРІРµСЂРєР° РІРІРµРґРµРЅРЅС‹С… СЃРёРјРІРѕР»РѕРІ
                 else {
                 	GetBlock(read, k);
-                	WriteKey();             // запись ключа в память
+                	WriteKey();             // Р·Р°РїРёСЃСЊ РєР»СЋС‡Р° РІ РїР°РјСЏС‚СЊ
                 	ReadKey();
                 	LittleBlock(k);
                 	sendMessage = 1;
@@ -235,13 +235,13 @@ void USART2_IRQHandler() {
     }
     if (USART_GetITStatus(USART2, USART_IT_TC) != RESET) {
     	if (sendByte) {
-            USART_ClearITPendingBit(USART2, USART_IT_TC);    //вывод только что введенного символа
+            USART_ClearITPendingBit(USART2, USART_IT_TC);    //РІС‹РІРѕРґ С‚РѕР»СЊРєРѕ С‡С‚Рѕ РІРІРµРґРµРЅРЅРѕРіРѕ СЃРёРјРІРѕР»Р°
             USART_SendData(USART2, data);
             sendByte = 0;
 
         }
         else if (sendBlock) {
-        	USART_ClearITPendingBit(USART2, USART_IT_TC);    // вывод зашифрованного/расшифрованного блока данных
+        	USART_ClearITPendingBit(USART2, USART_IT_TC);    // РІС‹РІРѕРґ Р·Р°С€РёС„СЂРѕРІР°РЅРЅРѕРіРѕ/СЂР°СЃС€РёС„СЂРѕРІР°РЅРЅРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С…
             USART_SendData(USART2, send[sendCount]);
             sendCount++;
             if (sendCount == 34) {
@@ -251,7 +251,7 @@ void USART2_IRQHandler() {
              }
        }
         else if (sendMessage) {
-            USART_ClearITPendingBit(USART2, USART_IT_TC);    //вывод сообщения о новом ключе
+            USART_ClearITPendingBit(USART2, USART_IT_TC);    //РІС‹РІРѕРґ СЃРѕРѕР±С‰РµРЅРёСЏ Рѕ РЅРѕРІРѕРј РєР»СЋС‡Рµ
             USART_SendData(USART2, message[sendCount]);
             sendCount++;
             if (sendCount == 11) {
@@ -261,7 +261,7 @@ void USART2_IRQHandler() {
             }
         }
         else if (sendKey) {
-            USART_ClearITPendingBit(USART2, USART_IT_TC);   // вывод нового ключа
+            USART_ClearITPendingBit(USART2, USART_IT_TC);   // РІС‹РІРѕРґ РЅРѕРІРѕРіРѕ РєР»СЋС‡Р°
             USART_SendData(USART2, send[sendCount+2]);
             sendCount++;
             if (sendCount == 32) {
@@ -272,7 +272,7 @@ void USART2_IRQHandler() {
             }
         }
         else if (sendNewLine) {
-            USART_ClearITPendingBit(USART2, USART_IT_TC);   // перенос строки
+            USART_ClearITPendingBit(USART2, USART_IT_TC);   // РїРµСЂРµРЅРѕСЃ СЃС‚СЂРѕРєРё
             USART_SendData(USART2, newLine[sendCount]);
             sendCount++;
             if (sendCount == 2) {
@@ -282,7 +282,7 @@ void USART2_IRQHandler() {
         }
 
         else if (sendError){
-        	USART_ClearITPendingBit(USART2, USART_IT_TC);   // вывод сообщения об ошибке
+        	USART_ClearITPendingBit(USART2, USART_IT_TC);   // РІС‹РІРѕРґ СЃРѕРѕР±С‰РµРЅРёСЏ РѕР± РѕС€РёР±РєРµ
         	USART_SendData(USART2, wrong[sendCount]);
         	sendCount++;
         	if (sendCount == 9) {
@@ -294,7 +294,7 @@ void USART2_IRQHandler() {
     }
 }
 
-/* Умножение на 2 в поле Галуа для блока замены S0 */
+/* РЈРјРЅРѕР¶РµРЅРёРµ РЅР° 2 РІ РїРѕР»Рµ Р“Р°Р»СѓР° РґР»СЏ Р±Р»РѕРєР° Р·Р°РјРµРЅС‹ S0 */
 uint8_t S0x2(uint8_t x) {
     unsigned int gf = 0x13;
     x = x << 1;
@@ -302,7 +302,7 @@ uint8_t S0x2(uint8_t x) {
     return x;
 }
 
-/* Реализация блока замены S0 */
+/* Р РµР°Р»РёР·Р°С†РёСЏ Р±Р»РѕРєР° Р·Р°РјРµРЅС‹ S0  */
 volatile uint8_t S0(uint8_t x) {
     uint8_t x0 = x >> 4, x1 = x & 0x0f, u0 = 0, u1 = 0;
     x0 = SS[0][x0];
@@ -315,38 +315,38 @@ volatile uint8_t S0(uint8_t x) {
     return x;
 }
 
-/* Умножение на 2 в поле Галуа для перемножения матриц */
+/* РЈРјРЅРѕР¶РµРЅРёРµ РЅР° 2 РІ РїРѕР»Рµ Р“Р°Р»СѓР° РґР»СЏ РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ РјР°С‚СЂРёС† */
 uint8_t Mx2(uint8_t x) {
     unsigned int gf = 0x11d, y = x << 1;
     if (y & (1 << 8)) y ^= gf;
     return y;
 }
 
-/* Умножение на 4 в поле Галуа для перемножения матриц */
+/* РЈРјРЅРѕР¶РµРЅРёРµ РЅР° 4 РІ РїРѕР»Рµ Р“Р°Р»СѓР° РґР»СЏ РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ РјР°С‚СЂРёС† */
 uint8_t Mx4(uint8_t x) {
     uint8_t y = Mx2(Mx2(x));
     return y;
 }
 
-/* Умножение на 6 в поле Галуа для перемножения матриц */
+/* РЈРјРЅРѕР¶РµРЅРёРµ РЅР° 6 РІ РїРѕР»Рµ Р“Р°Р»СѓР° РґР»СЏ РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ РјР°С‚СЂРёС† */
 uint8_t Mx6(uint8_t x) {
     uint8_t y = Mx2(x) ^ Mx4(x);
     return y;
 }
 
-/* Умножение на 8 в поле Галуа для перемножения матриц */
+/* РЈРјРЅРѕР¶РµРЅРёРµ РЅР° 8 РІ РїРѕР»Рµ Р“Р°Р»СѓР° РґР»СЏ РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ РјР°С‚СЂРёС† */
 uint8_t Mx8(uint8_t x) {
     uint8_t y = Mx2(Mx2(Mx2(x)));
     return y;
 }
 
-/* Умножение на 10 в поле Галуа для перемножения матриц */
+/* РЈРјРЅРѕР¶РµРЅРёРµ РЅР° 10 РІ РїРѕР»Рµ Р“Р°Р»СѓР° РґР»СЏ РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ РјР°С‚СЂРёС† */
 uint8_t Mxa(uint8_t x) {
     uint8_t y = Mx2(x) ^ Mx8(x);
     return y;
 }
 
-/* Функция F0 в сети Фейстеля*/
+/* Р¤СѓРЅРєС†РёСЏ F0 РІ СЃРµС‚Рё Р¤РµР№СЃС‚РµР»СЏ */
 uint32_t F0(uint32_t x, uint32_t rk) {
     x = x ^ rk;
     uint8_t x0 = x >> 24, x1 = (x >> 16) & 0xff, x2 = (x >> 8) & 0xff, x3 = x & 0xff;
@@ -361,7 +361,7 @@ uint32_t F0(uint32_t x, uint32_t rk) {
     return y;
 }
 
-/* Функция F1 в сети Фейстеля*/
+/* Р¤СѓРЅРєС†РёСЏ F1 РІ СЃРµС‚Рё Р¤РµР№СЃС‚РµР»СЏ */
 uint32_t F1(uint32_t x, uint32_t rk) {
     x = x ^ rk;
     uint8_t x0 = x >> 24, x1 = (x >> 16) & 0xff, x2 = (x >> 8) & 0xff, x3 = x & 0xff;
@@ -376,11 +376,11 @@ uint32_t F1(uint32_t x, uint32_t rk) {
     return y;
 }
 
-/* Реализация сети Фейстеля
- * x - шифруемый блок из 4-х элементов размером 4 байта
- * RK - массив раундовых ключей
- * rounds - количество раундов
- * enc - индикатор. Равен 1, если производится зашифрование. Иначе - 0*/
+/* Р РµР°Р»РёР·Р°С†РёСЏ СЃРµС‚Рё Р¤РµР№СЃС‚РµР»СЏ
+ * x - С€РёС„СЂСѓРµРјС‹Р№ Р±Р»РѕРє РёР· 4-С… СЌР»РµРјРµРЅС‚РѕРІ СЂР°Р·РјРµСЂРѕРј 4 Р±Р°Р№С‚Р°
+ * RK - РјР°СЃСЃРёРІ СЂР°СѓРЅРґРѕРІС‹С… РєР»СЋС‡РµР№
+ * rounds - РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°СѓРЅРґРѕРІ
+ * enc - РёРЅРґРёРєР°С‚РѕСЂ. Р Р°РІРµРЅ 1, РµСЃР»Рё РїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ Р·Р°С€РёС„СЂРѕРІР°РЅРёРµ. РРЅР°С‡Рµ - 0 */
 void GFN(uint32_t x[], uint32_t RK[], int rounds, uint8_t enc) {
     for (int i = 0; i < rounds; i++) {
     	if (enc){
@@ -417,8 +417,8 @@ void GFN(uint32_t x[], uint32_t RK[], int rounds, uint8_t enc) {
     }
 }
 
-/* DoubleSwap для генерирования раундовых ключей
- * x - массив из 4-х элементов размером 4 байта*/
+/* DoubleSwap РґР»СЏ РіРµРЅРµСЂРёСЂРѕРІР°РЅРёСЏ СЂР°СѓРЅРґРѕРІС‹С… РєР»СЋС‡РµР№
+ * x - РјР°СЃСЃРёРІ РёР· 4-С… СЌР»РµРјРµРЅС‚РѕРІ СЂР°Р·РјРµСЂРѕРј 4 Р±Р°Р№С‚Р° */
 void DoubleSwap(uint32_t x[]) {
     uint32_t y1 = 0, y2 = 0;
     y1 = x[0] & 0xfe000000;
@@ -429,9 +429,9 @@ void DoubleSwap(uint32_t x[]) {
     x[2] = y1 | (x[2] >> 7);
 }
 
-/* Генерация раундовых ключей
- * k - основной ключ
- * RK - массив для хранения раундовых ключей*/
+/* Р“РµРЅРµСЂР°С†РёСЏ СЂР°СѓРЅРґРѕРІС‹С… РєР»СЋС‡РµР№
+ * k - РѕСЃРЅРѕРІРЅРѕР№ РєР»СЋС‡
+ * RK - РјР°СЃСЃРёРІ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЂР°СѓРЅРґРѕРІС‹С… РєР»СЋС‡РµР№ */
 void Keys(uint32_t k[], uint32_t RK[]) {
     uint32_t l[4] = {k[0], k[1], k[2], k[3]};
     GFN(l, con, 12, 1);
@@ -455,8 +455,8 @@ void Keys(uint32_t k[], uint32_t RK[]) {
     }
 }
 
-/* Проверка введенных символов.
- * Если есть символ, не принадлежащий шестнадцатиричной системе - возвращает ошибку*/
+/* РџСЂРѕРІРµСЂРєР° РІРІРµРґРµРЅРЅС‹С… СЃРёРјРІРѕР»РѕРІ.
+ * Р•СЃР»Рё РµСЃС‚СЊ СЃРёРјРІРѕР», РЅРµ РїСЂРёРЅР°РґР»РµР¶Р°С‰РёР№ С€РµСЃС‚РЅР°РґС†Р°С‚РёСЂРёС‡РЅРѕР№ СЃРёСЃС‚РµРјРµ - РІРѕР·РІСЂР°С‰Р°РµС‚ РѕС€РёР±РєСѓ */
 void isRight(){
 	uint8_t symbols[22] = {'0','1','2','3','4','5','6','7','8','9','A','a','B','b','C','c','D','d','E','e','F','f'};
 	for(uint8_t i=0;i<32;i++){
@@ -482,7 +482,7 @@ int main()
     USART_ITConfig(USART2, USART_IT_TC, ENABLE);
 
     while (1) {
-        if (later) {           // Задание и генерация ключей
+        if (later) {           // Р—Р°РґР°РЅРёРµ Рё РіРµРЅРµСЂР°С†РёСЏ РєР»СЋС‡РµР№
             ReadKey();
             Keys(k, RoundKeys);
             later = 0;
@@ -495,17 +495,17 @@ int main()
 #if (measurement)
             SCB_DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
             DWT_CYCCNT = 0;
-            DWT_CONTROL |= 1;         //запуск счетчика
+            DWT_CONTROL |= 1;         //Р·Р°РїСѓСЃРє СЃС‡РµС‚С‡РёРєР°
 #endif
             if (readStatus == 0x31){
-            	b[1] = b[1] ^ k[0];          // Шифрование блока
+            	b[1] = b[1] ^ k[0];          // С€РёС„СЂРѕРІР°РЅРёРµ Р±Р»РѕРєР°
             	b[3] = b[3] ^ k[1];
             	GFN(b, RoundKeys, 18, 1);
             	b[1] = b[1] ^ k[2];
             	b[3] =b[3] ^ k[3];
             }
             else {
-                b[1] = b[1] ^ k[2];         // Расшифрование блока
+                b[1] = b[1] ^ k[2];         // СЂР°СЃС€РёС„СЂРѕРІР°РЅРёРµ Р±Р»РѕРєР°
                 b[3] = b[3] ^ k[3];
                 GFN(b, RoundKeys, 18, 0);
                 b[1] = b[1] ^ k[0];
